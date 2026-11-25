@@ -55,10 +55,6 @@ export default function HomePage() {
     <>
       <section className="hero">
         <div className="container">
-          <Link className="tag" href="/changelog">
-            <span className="tag-dot" aria-hidden="true" />
-            Bryn Enterprise OS — Release 4.2 →
-          </Link>
           <h1>
             <span className="line">We build digital</span>
             <span className="line">solutions that move</span>
