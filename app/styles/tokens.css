@@ -1,0 +1,97 @@
+/* ==========================================================================
+   BRYN — design tokens
+   One accent, two grounds, four type roles, a fixed spacing scale.
+   ========================================================================== */
+
+:root {
+  /* Ground and text */
+  --bg: #fafafa;
+  --fg: #09090b;
+  --mu: #52525b;
+  --ln: #e5e7eb;
+  --sf: #ffffff;
+  --sf-2: #f4f4f5;
+
+  /* Brand accent */
+  --ac: #2563eb;
+  --ac-hover: #1d4ed8;
+  --ac-ink: #ffffff;
+  --ac-soft: rgba(37, 99, 235, 0.08);
+  --ac-line: rgba(37, 99, 235, 0.28);
+
+  /* Status only */
+  --ok: #059669;
+  --ok-bright: #10b981;
+  --ok-soft: #34d399;
+  --warn: #d97706;
+  --warn-bright: #f59e0b;
+  --err: #dc2626;
+
+  /* Type */
+  --d: var(--font-display), 'Plus Jakarta Sans', system-ui, sans-serif;
+  --b: var(--font-body), Inter, system-ui, sans-serif;
+  --m: var(--font-mono), 'JetBrains Mono', ui-monospace, monospace;
+  --s: var(--font-serif), 'Instrument Serif', Georgia, serif;
+
+  /* Radii */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-pill: 999px;
+
+  /* Spacing */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+  --s9: 96px;
+  --s10: 128px;
+
+  /* Layout */
+  --container: min(1280px, 100% - 48px);
+  --nav-width: min(1200px, 100% - 24px);
+  --section-pad: clamp(72px, 10vw, 150px);
+
+  /* Motion */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --fast: 150ms;
+  --base: 220ms;
+  --slow: 300ms;
+
+  /* Elevation — reserved for the product window and terminal */
+  --shadow-window: 0 40px 80px -40px rgba(9, 9, 11, 0.35);
+  --shadow-overlay: 0 30px 60px -20px rgba(9, 9, 11, 0.6);
+
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --bg: #09090b;
+  --fg: #fafafa;
+  --mu: #a1a1aa;
+  --ln: rgba(255, 255, 255, 0.08);
+  --sf: #121215;
+  --sf-2: #18181b;
+  --ac-soft: rgba(37, 99, 235, 0.16);
+  --ac-line: rgba(96, 165, 250, 0.38);
+  --shadow-window: 0 40px 80px -40px rgba(0, 0, 0, 0.8);
+  color-scheme: dark;
+}
+
+/* A dark band inside a light page, or a light band inside a dark page. */
+.band-dark {
+  --bg: #09090b;
+  --fg: #fafafa;
+  --mu: #a1a1aa;
+  --ln: rgba(255, 255, 255, 0.08);
+  --sf: #121215;
+  --sf-2: #18181b;
+  --ac-soft: rgba(37, 99, 235, 0.16);
+  --ac-line: rgba(96, 165, 250, 0.38);
+  --shadow-window: 0 40px 80px -40px rgba(0, 0, 0, 0.8);
+  color-scheme: dark;
+}
