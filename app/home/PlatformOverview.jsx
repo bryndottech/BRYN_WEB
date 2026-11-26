@@ -81,8 +81,8 @@ export default function PlatformOverview() {
     <section className="section section-dark" id="platform">
       <div className="container">
         <div className="section-head">
-          <h2>One platform. Every operational layer.</h2>
-          <p>
+          <h2 data-r>One platform. Every operational layer.</h2>
+          <p data-r>
             Each capability is built to be inspected, audited and scaled. Hover, click and see
             how it behaves.
           </p>
@@ -90,7 +90,7 @@ export default function PlatformOverview() {
         <div className="platform-grid">
           {platformCards.map((card) => (
             <article
-              className={`platform-card${card.kind === 'latency' ? ' is-wide' : ''}`}
+              className={`platform-card cd${card.kind === 'latency' ? ' is-wide' : ''}`}
               key={card.title}
             >
               <span className="mono">{card.eyebrow}</span>

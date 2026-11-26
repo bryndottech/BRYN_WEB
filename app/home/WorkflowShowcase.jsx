@@ -110,7 +110,7 @@ export default function WorkflowShowcase() {
   };
 
   return (
-    <section className="workflow-section" id="flow" ref={sectionRef}>
+    <section className="workflow-section" id="approach" ref={sectionRef}>
       <div className="workflow-pin">
         <div className="container">
           <div className="workflow-layout">

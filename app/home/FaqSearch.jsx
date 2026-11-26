@@ -16,15 +16,15 @@ export default function FaqSearch({ faqs }) {
   }, [faqs, query]);
 
   return (
-    <div className="faq-layout">
+    <div className="faq-layout fq">
       <div>
-        <h2>Questions, answered.</h2>
-        <label className="sr-only" htmlFor="faq-search">
+        <h2 data-r>Questions, answered.</h2>
+        <label className="sr-only" htmlFor="fs">
           Search questions
         </label>
         <input
-          id="faq-search"
-          className="faq-search"
+          id="fs"
+          className="faq-search sx"
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
@@ -32,16 +32,18 @@ export default function FaqSearch({ faqs }) {
         />
         <p className="faq-help">
           Can’t find it?{' '}
-          <Link className="text-link" href="/demo">
+          <Link className="ln" href="/contact">
             Talk to us
           </Link>
         </p>
       </div>
-      <div>
+      <div id="fq">
         <Accordion
           key={query}
           items={filtered.map((faq) => ({ title: faq.question, body: faq.answer }))}
-          emptyMessage="No match. Email hello@bryn.com and we’ll answer within a day."
+          defaultOpen={0}
+          emptyMessage="No match. Email bryndottech@gmail.com for assistance."
+          variant="live"
         />
       </div>
     </div>

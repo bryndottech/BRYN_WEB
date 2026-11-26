@@ -1,6 +1,7 @@
 /* ==========================================================================
    BRYN — design tokens
-   One accent, two grounds, four type roles, a fixed spacing scale.
+   Latest origin/main palette: blue base, magenta/green interactions, two grounds,
+   four type roles, a fixed spacing scale.
    ========================================================================== */
 
 :root {
@@ -9,7 +10,7 @@
   --fg: #09090b;
   --mu: #52525b;
   --ln: #e5e7eb;
-  --sf: #ffffff;
+  --sf: rgba(255, 255, 255, 0.82);
   --sf-2: #f4f4f5;
 
   /* Brand accent */
@@ -18,6 +19,35 @@
   --ac-ink: #ffffff;
   --ac-soft: rgba(37, 99, 235, 0.08);
   --ac-line: rgba(37, 99, 235, 0.28);
+
+  /* Latest-main interaction palette */
+  --brand-hover: linear-gradient(110deg, #f701fc 0%, #03f848 100%);
+  --brand-magenta: #f701fc;
+  --brand-green: #03f848;
+  --brand-magenta-light: #c026d3;
+  --brand-violet-light: #7c3aed;
+  --brand-spot-magenta: rgba(247, 1, 252, 0.12);
+  --brand-spot-green: rgba(3, 248, 72, 0.09);
+  --brand-card-glow: rgba(37, 99, 235, 0.14);
+  --glitch-blue: #2563eb;
+  --glitch-orange: #ff4d00;
+  --confetti-green: #00ff55;
+  --confetti-magenta: #ff00f5;
+
+  /* BRYN_CONNECT standalone palette (verified source) */
+  --connect-bg: #fafafa;
+  --connect-fg: #09090b;
+  --connect-muted: #71717a;
+  --connect-line: #e4e4e7;
+  --connect-surface: rgba(255, 255, 255, 0.82);
+  --connect-raised: #ffffff;
+  --connect-on-dark: #ffffff;
+  --connect-grid: rgba(9, 9, 11, 0.035);
+  --connect-icon: #18181b;
+  --connect-secondary: #a1a1aa;
+  --connect-hover-line: rgba(9, 9, 11, 0.24);
+  --connect-shadow: rgba(9, 9, 11, 0.13);
+  --connect-gradient: linear-gradient(110deg, #03f848 0%, #03f848 35%, #f701fc 100%);
 
   /* Status only */
   --ok: #059669;
@@ -58,9 +88,14 @@
 
   /* Motion */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-curtain: cubic-bezier(0.76, 0, 0.24, 1);
   --fast: 150ms;
   --base: 220ms;
   --slow: 300ms;
+  --reveal: 900ms;
+  --mask: 1100ms;
+  --curtain-in: 550ms;
+  --curtain-out: 600ms;
 
   /* Elevation — reserved for the product window and terminal */
   --shadow-window: 0 40px 80px -40px rgba(9, 9, 11, 0.35);
@@ -79,6 +114,20 @@
   --ac-soft: rgba(37, 99, 235, 0.16);
   --ac-line: rgba(96, 165, 250, 0.38);
   --shadow-window: 0 40px 80px -40px rgba(0, 0, 0, 0.8);
+
+  /* BRYN_CONNECT follows the selected theme on the internal route. */
+  --connect-bg: #09090b;
+  --connect-fg: #fafafa;
+  --connect-muted: #a1a1aa;
+  --connect-line: rgba(255, 255, 255, 0.1);
+  --connect-surface: rgba(24, 24, 27, 0.78);
+  --connect-raised: #18181b;
+  --connect-on-dark: #09090b;
+  --connect-grid: rgba(255, 255, 255, 0.04);
+  --connect-icon: #fafafa;
+  --connect-secondary: #a1a1aa;
+  --connect-hover-line: rgba(255, 255, 255, 0.24);
+  --connect-shadow: rgba(0, 0, 0, 0.45);
   color-scheme: dark;
 }
 
@@ -87,8 +136,8 @@
   --bg: #09090b;
   --fg: #fafafa;
   --mu: #a1a1aa;
-  --ln: rgba(255, 255, 255, 0.08);
-  --sf: #121215;
+  --ln: rgba(255, 255, 255, 0.1);
+  --sf: rgba(24, 24, 27, 0.78);
   --sf-2: #18181b;
   --ac-soft: rgba(37, 99, 235, 0.16);
   --ac-line: rgba(96, 165, 250, 0.38);
