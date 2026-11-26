@@ -420,7 +420,10 @@ Latest-main motion is part of the design:
 - Easing token: `cubic-bezier(.16,1,.3,1)`.
 - Standard UI transitions: `150–300ms`; masked headings use `1.1s`; reveal transitions
   use `.9s`; service accordion rows use `.7s`; page curtain uses `.55s`/`.6s`.
-- Hero entrance: masked h1 lines with staggered delays of `.08s` and `.16s`.
+- Hero entrance: masked h1 lines with staggered delays of `.08s` and `.16s`. On the
+  initial load, `data-initial-mask="1"` starts the home hero animation on first paint
+  after `120ms`, matching latest main without waiting for hydration. The attribute is
+  removed for route changes and after the entrance so JS reveals are not delayed.
 - Scroll reveals: `[data-r], .m, .sp` observed at `threshold: .15`, adding `.in`.
 - Magnetic buttons: `.mag` translate on mousemove by `.2x`/`.3y` of pointer offset.
 - Card spotlight: `.cd` sets `--x`/`--y`; agency cards set `--spot-*` and
@@ -432,7 +435,9 @@ Latest-main motion is part of the design:
 - Right rail: `.rr i` uses a white/transparent gradient driven by `--p`.
 - Page curtain: `#cv` slides in on route change, swaps content, then slides out. The
   logo asset is used unchanged; do not invert it in dark theme. Class order is
-  `in` → `out` → cleared.
+  `in` → `out` → cleared. The migrated `#route-curtain` holds the cover for `580ms`
+  before the route swap; the new page's mask/reveal starts as the curtain exits,
+  not while it is still covering the screen.
 - Parallax: hero `backgroundPositionY` moves with scroll on home.
 - Count-up: `[data-n]` animates to its value over `1600ms` when intersecting.
 - Text scramble: `[data-sc]` cycles random characters before settling.

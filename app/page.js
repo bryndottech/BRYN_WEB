@@ -27,7 +27,7 @@ export default function HomePage() {
             <b />
             BRYN Technologies · Digital Services
           </a>
-          <h1 className="in">
+          <h1>
             <span className="m">
               <span>Digital solutions</span>
             </span>

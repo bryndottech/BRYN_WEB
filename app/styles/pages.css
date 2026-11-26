@@ -99,16 +99,26 @@
   overflow: hidden;
   padding-bottom: 0.08em;
 }
-.hero h1 .m>span {
-  display: block;
-  transform: translateY(105%);
+
+/* Initial load starts on first paint, matching latest-main's 120ms delay.
+   Route changes remove data-initial-mask so the JS reveal starts as the
+   curtain exits, with no extra delay. */
+[data-js='1'][data-initial-mask='1'] .hero h1 .m > span {
+  animation: hero-mask 1.1s var(--ease) 120ms both;
 }
-.hero h1.in .m>span {
-  animation: reveal 1.1s var(--ease) both;
+
+[data-js='1'][data-initial-mask='1'] .hero h1 .m:nth-child(2) > span {
+  animation-delay: 200ms;
 }
-.hero h1.in .m:nth-child(2) > span { animation-delay: 0.08s; }
-.hero h1.in .m:nth-child(3) > span { animation-delay: 0.16s; }
-@keyframes reveal { from { transform: translateY(105%); } to { transform: translateY(0); } }
+
+[data-js='1'][data-initial-mask='1'] .hero h1 .m:nth-child(3) > span {
+  animation-delay: 280ms;
+}
+
+@keyframes hero-mask {
+  from { transform: translateY(105%); }
+  to { transform: none; }
+}
 
 /* ---------- Home: customer band ---------- */
 

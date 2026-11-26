@@ -42,9 +42,11 @@ const themeScript = `
     var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     document.documentElement.dataset.theme = theme;
     document.documentElement.dataset.js = '1';
+    document.documentElement.dataset.initialMask = '1';
   } catch (error) {
     document.documentElement.dataset.theme = 'light';
     document.documentElement.dataset.js = '1';
+    document.documentElement.dataset.initialMask = '1';
   }
 })();
 `;

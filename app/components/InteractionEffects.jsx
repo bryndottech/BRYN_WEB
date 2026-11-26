@@ -1,48 +1,60 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { basePath } from '@/lib/paths';
 
 const chars = 'ABCDEF0123456789<>/_';
 const CURTAIN_ID = 'route-curtain';
+const CURTAIN_HOLD_MS = 580;
+const CURTAIN_RESET_AFTER_OUT_MS = 720;
+
+function removeBasePath(path) {
+  if (!basePath) return path;
+  if (path === basePath) return '/';
+  if (path.startsWith(`${basePath}/`)) return path.slice(basePath.length);
+  return path;
+}
 
 export default function InteractionEffects() {
   const pathname = usePathname();
+  const router = useRouter();
   const firstRoute = useRef(true);
+  const pendingNavigation = useRef(false);
+  const startRevealsRef = useRef(() => {});
 
   useEffect(() => {
     const controller = new AbortController();
     const { signal } = controller;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const timers = new Set();
+
+    const later = (fn, ms) => {
+      const timer = window.setTimeout(() => {
+        timers.delete(timer);
+        fn();
+      }, ms);
+      timers.add(timer);
+      return timer;
+    };
 
     // Scroll reveals. [data-r] is only hidden when JS is available.
-    let revealObserver = null;
-    if (!reduced && 'IntersectionObserver' in window) {
-      revealObserver = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
-            entry.target.classList.add('in');
-            revealObserver.unobserve(entry.target);
-          });
-        },
-        { threshold: 0.15 }
-      );
-    }
+    const revealObserver =
+      !reduced && 'IntersectionObserver' in window
+        ? new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('in');
+                revealObserver.unobserve(entry.target);
+              });
+            },
+            { threshold: 0.15 }
+          )
+        : null;
 
-    const observeReveals = () => {
-      document.querySelectorAll('[data-r], .m, .sp').forEach((element) => {
-        if (element.classList.contains('in')) return;
-        if (reduced || !revealObserver) element.classList.add('in');
-        else revealObserver.observe(element);
-      });
-      document.querySelectorAll('.hero .m').forEach((element) => element.classList.add('in'));
-    };
-    observeReveals();
-
-    // Page-header eyebrow scramble.
-    document.querySelectorAll('[data-sc]').forEach((element) => {
+    const scramble = (element) => {
       if (reduced || element.dataset.scrambled === '1') return;
       element.dataset.scrambled = '1';
       const text = element.textContent || '';
@@ -59,9 +71,58 @@ export default function InteractionEffects() {
         if (++frame > text.length * 2) {
           element.textContent = text;
           window.clearInterval(timer);
+          timers.delete(timer);
         }
       }, 28);
-    });
+      timers.add(timer);
+    };
+
+    const startCountUps = () => {
+      document.querySelectorAll('[data-n]').forEach((element) => {
+        if (element.dataset.countBound === '1') return;
+        element.dataset.countBound = '1';
+        const target = Number.parseFloat(element.dataset.n || '0');
+        const decimals = Number.parseInt(element.dataset.d || '0', 10);
+        const prefix = element.dataset.prefix || '';
+        const suffix = element.dataset.suffix || '';
+        const render = (value) => {
+          element.textContent = `${prefix}${value.toFixed(decimals)}${suffix}`;
+        };
+        if (reduced || !('IntersectionObserver' in window)) {
+          render(target);
+          return;
+        }
+        const countObserver = new IntersectionObserver(
+          (entries) => {
+            if (!entries[0].isIntersecting) return;
+            countObserver.disconnect();
+            const start = performance.now();
+            const tick = (now) => {
+              const progress = Math.min(1, (now - start) / 1600);
+              render(target * (1 - Math.pow(1 - progress, 4)));
+              if (progress < 1) requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+          },
+          { threshold: 0.6 }
+        );
+        countObserver.observe(element);
+        signal.addEventListener('abort', () => countObserver.disconnect(), { once: true });
+      });
+    };
+
+    // With a route curtain, the new page's entrance starts as the logo exits,
+    // never while it is still covering the screen.
+    const startReveals = () => {
+      document.querySelectorAll('[data-r], .m, .sp').forEach((element) => {
+        if (element.classList.contains('in')) return;
+        if (reduced || !revealObserver) element.classList.add('in');
+        else revealObserver.observe(element);
+      });
+      document.querySelectorAll('[data-sc]').forEach(scramble);
+      startCountUps();
+    };
+    startRevealsRef.current = startReveals;
 
     // Listeners from the previous route were aborted, so allow clean rebinding.
     document
@@ -94,7 +155,7 @@ export default function InteractionEffects() {
       button.addEventListener('blur', reset, { signal });
     });
 
-    // Card spotlight and tilt.
+    // Latest-main card tilt and spotlight.
     document.querySelectorAll('.cd, .pc, .platform-card').forEach((card) => {
       if (card.dataset.tiltBound === '1') return;
       card.dataset.tiltBound = '1';
@@ -113,12 +174,12 @@ export default function InteractionEffects() {
           const rect = card.getBoundingClientRect();
           const px = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
           const py = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
-          card.style.setProperty('--x', `${px * 100}%`);
-          card.style.setProperty('--y', `${py * 100}%`);
+          card.style.setProperty('--x', `${event.clientX - rect.left}px`);
+          card.style.setProperty('--y', `${event.clientY - rect.top}px`);
           card.style.setProperty('--spot-x', `${px * 100}%`);
           card.style.setProperty('--spot-y', `${py * 100}%`);
-          card.style.setProperty('--rx', `${(0.5 - py) * 4}deg`);
-          card.style.setProperty('--ry', `${(px - 0.5) * 5}deg`);
+          card.style.setProperty('--rx', `${(0.5 - py) * 5}deg`);
+          card.style.setProperty('--ry', `${(px - 0.5) * 6}deg`);
         },
         { signal }
       );
@@ -163,86 +224,114 @@ export default function InteractionEffects() {
       card.addEventListener('blur', reset, { signal });
     });
 
-    // Count-up metrics.
-    document.querySelectorAll('[data-n]').forEach((element) => {
-      if (element.dataset.countBound === '1') return;
-      element.dataset.countBound = '1';
-      const target = Number.parseFloat(element.dataset.n || '0');
-      const decimals = Number.parseInt(element.dataset.d || '0', 10);
-      const prefix = element.dataset.prefix || '';
-      const suffix = element.dataset.suffix || '';
-      const render = (value) => {
-        element.textContent = `${prefix}${value.toFixed(decimals)}${suffix}`;
-      };
-      if (reduced || !('IntersectionObserver' in window)) {
-        render(target);
-        return;
-      }
-      const countObserver = new IntersectionObserver(
-        (entries) => {
-          if (!entries[0].isIntersecting) return;
-          countObserver.disconnect();
-          const start = performance.now();
-          const tick = (now) => {
-            const progress = Math.min(1, (now - start) / 1600);
-            render(target * (1 - Math.pow(1 - progress, 4)));
-            if (progress < 1) requestAnimationFrame(tick);
-          };
-          requestAnimationFrame(tick);
-        },
-        { threshold: 0.6 }
-      );
-      countObserver.observe(element);
-      signal.addEventListener('abort', () => countObserver.disconnect(), { once: true });
-    });
-
-    // Start the curtain before internal navigation.
+    // Internal navigation must finish covering the screen before the route changes.
     const curtain = document.getElementById(CURTAIN_ID);
     if (curtain) {
       document.addEventListener(
         'click',
         (event) => {
-          if (reduced || event.defaultPrevented || event.button !== 0) return;
+          if (event.defaultPrevented || event.button !== 0) return;
           if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
           const link = event.target.closest?.('a[href]');
-          if (!link) return;
+          if (!link || link.target === '_blank' || link.hasAttribute('download')) return;
           const href = link.getAttribute('href');
-          if (!href || href.startsWith('#') || link.target === '_blank') return;
+          if (!href || href.startsWith('#')) return;
           const url = new URL(href, window.location.href);
           if (url.origin !== window.location.origin) return;
-          if (url.pathname === window.location.pathname && url.hash) return;
+
+          const currentPath = window.location.pathname;
+          if (url.pathname === currentPath && url.hash) return;
+          if (url.pathname === currentPath && url.search === window.location.search && !url.hash) {
+            event.preventDefault();
+            event.stopPropagation();
+            window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+            return;
+          }
+          if (pendingNavigation.current) {
+            event.preventDefault();
+            event.stopPropagation();
+            return;
+          }
+
+          event.preventDefault();
+          event.stopPropagation();
+          document.documentElement.removeAttribute('data-initial-mask');
+          const target = `${removeBasePath(url.pathname)}${url.search}${url.hash}`;
+
+          if (reduced) {
+            router.push(target);
+            return;
+          }
+          pendingNavigation.current = true;
           curtain.classList.remove('out');
           curtain.classList.add('in');
+          later(() => router.push(target), CURTAIN_HOLD_MS);
         },
-        { signal }
+        { signal, capture: true }
       );
     }
 
     return () => {
       controller.abort();
       revealObserver?.disconnect();
+      timers.forEach((timer) => window.clearTimeout(timer));
     };
-  }, [pathname]);
+  }, [pathname, router]);
 
   useEffect(() => {
-    if (firstRoute.current) {
-      firstRoute.current = false;
-      return undefined;
-    }
     const curtain = document.getElementById(CURTAIN_ID);
-    if (!curtain || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
-
-    curtain.className = 'in';
-    const outTimer = window.setTimeout(() => {
-      curtain.className = 'out';
-    }, 580);
-    const doneTimer = window.setTimeout(() => {
-      curtain.className = '';
-    }, 1300);
-    return () => {
-      window.clearTimeout(outTimer);
-      window.clearTimeout(doneTimer);
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isInitialRoute = firstRoute.current;
+    firstRoute.current = false;
+    if (!isInitialRoute) document.documentElement.removeAttribute('data-initial-mask');
+    const timers = new Set();
+    const later = (fn, ms) => {
+      const timer = window.setTimeout(() => {
+        timers.delete(timer);
+        fn();
+      }, ms);
+      timers.add(timer);
+      return timer;
     };
+
+    if (isInitialRoute) {
+      if (!reduced) {
+        later(() => {
+          document.querySelectorAll('.hero .m').forEach((element) => element.classList.add('in'));
+        }, 120);
+        later(() => document.documentElement.removeAttribute('data-initial-mask'), 1500);
+      } else {
+        document.documentElement.removeAttribute('data-initial-mask');
+      }
+      startRevealsRef.current();
+      return () => timers.forEach((timer) => window.clearTimeout(timer));
+    }
+
+    if (pendingNavigation.current) {
+      pendingNavigation.current = false;
+      if (curtain && !reduced) {
+        curtain.className = 'out';
+        later(() => {
+          curtain.className = '';
+        }, CURTAIN_RESET_AFTER_OUT_MS);
+      }
+      startRevealsRef.current();
+    } else if (curtain && !reduced) {
+      // Browser back/forward changes the route before we can cover it. Show the
+      // same logo hold, then reveal with the curtain exit.
+      curtain.className = 'in';
+      later(() => {
+        curtain.className = 'out';
+        startRevealsRef.current();
+      }, CURTAIN_HOLD_MS);
+      later(() => {
+        curtain.className = '';
+      }, CURTAIN_HOLD_MS + CURTAIN_RESET_AFTER_OUT_MS);
+    } else {
+      startRevealsRef.current();
+    }
+
+    return () => timers.forEach((timer) => window.clearTimeout(timer));
   }, [pathname]);
 
   return null;

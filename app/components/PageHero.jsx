@@ -11,7 +11,7 @@ export default function PageHero({ eyebrow, title, description, children, aside 
             <span className="tag-dot" aria-hidden="true" />
             <span data-sc>{eyebrow}</span>
           </span>
-          <h1 className="in">
+          <h1>
             {lines.map((line) => (
               <span className="m" key={line}>
                 <span>{line}</span>

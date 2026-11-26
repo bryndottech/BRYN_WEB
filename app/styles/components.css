@@ -716,7 +716,7 @@ a.tag {
   overflow: hidden;
   transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
   transform-style: preserve-3d;
-  transition: transform 0.22s ease-out, border-color 0.25s ease, box-shadow 0.25s ease,
+  transition: transform 0.5s var(--ease), border-color 0.25s ease, box-shadow 0.25s ease,
     background 0.25s ease;
   will-change: transform;
 }
@@ -834,13 +834,47 @@ a.tag {
 }
 
 .agency-grid .agency-card {
+  --card-x: 0px;
+  --card-y: 0px;
+  --card-rx: 0deg;
+  --card-ry: 0deg;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   border-color: color-mix(in srgb, var(--ln) 72%, transparent);
   background: linear-gradient(
     135deg,
     color-mix(in srgb, var(--sf) 78%, transparent),
     color-mix(in srgb, var(--bg) 66%, transparent)
   );
+  transform: perspective(900px) translate3d(var(--card-x), var(--card-y), 0)
+    rotateX(var(--card-rx)) rotateY(var(--card-ry));
+  transform-style: preserve-3d;
+  backdrop-filter: blur(18px) saturate(135%);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
   box-shadow: 0 12px 34px rgba(9, 9, 11, 0.055), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  transition: transform 0.22s ease-out, border-color 0.25s ease, box-shadow 0.25s ease,
+    background 0.25s ease;
+  will-change: transform;
+}
+
+.agency-grid .agency-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.78;
+  background: radial-gradient(
+      260px circle at var(--spot-x) var(--spot-y),
+      var(--brand-spot-magenta),
+      transparent 62%
+    ),
+    radial-gradient(
+      240px circle at calc(var(--spot-x) + 18%) calc(var(--spot-y) + 12%),
+      var(--brand-spot-green),
+      transparent 65%
+    );
 }
 
 :root[data-theme='light'] .agency-grid .agency-card {
@@ -855,6 +889,13 @@ a.tag {
 :root[data-theme='dark'] .agency-grid .agency-card {
   background: linear-gradient(135deg, rgba(39, 39, 42, 0.82), rgba(24, 24, 27, 0.64));
   box-shadow: 0 14px 38px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .agency-grid .agency-card {
+    transform: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
 }
 
 .agency-card-link {
