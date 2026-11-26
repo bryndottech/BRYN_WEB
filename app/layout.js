@@ -4,9 +4,10 @@ import SiteHeader from './components/SiteHeader';
 import SiteFooter from './components/SiteFooter';
 import CommandMenu from './components/CommandMenu';
 import CookieBanner from './components/CookieBanner';
-import ChatWidget from './components/ChatWidget';
 import BackToTop from './components/BackToTop';
 import Toast from './components/Toast';
+import InteractionEffects from './components/InteractionEffects';
+import SectionRail from './components/SectionRail';
 import { site } from '@/lib/content';
 
 export const metadata = {
@@ -39,8 +40,10 @@ const themeScript = `
     var stored = localStorage.getItem('bryn-th');
     var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     document.documentElement.dataset.theme = theme;
+    document.documentElement.dataset.js = '1';
   } catch (error) {
     document.documentElement.dataset.theme = 'light';
+    document.documentElement.dataset.js = '1';
   }
 })();
 `;
@@ -48,8 +51,9 @@ const themeScript = `
 const organization = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'BRYN',
-  description: 'Enterprise platform and studio',
+  name: 'BRYN Technologies',
+  description:
+    'Digital solutions company providing web and software development, mobile app development, digital marketing, UI/UX and creative design, and AI, automation and IT solutions.',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'San Francisco',
@@ -76,14 +80,18 @@ export default function RootLayout({ children }) {
         <a className="skip-link" href="#main">
           Skip to content
         </a>
+        <div id="route-curtain" aria-hidden="true">
+          <span className="curtain-mark" />
+        </div>
+        <InteractionEffects />
         <SiteHeader />
+        <SectionRail />
         <main id="main" tabIndex={-1}>
           {children}
         </main>
         <SiteFooter />
         <CommandMenu />
         <CookieBanner />
-        <ChatWidget />
         <BackToTop />
         <Toast />
       </body>

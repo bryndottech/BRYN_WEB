@@ -14,6 +14,7 @@ export default function CookieBanner() {
 
   const reveal = () => {
     setVisible(true);
+    window.setTimeout(() => setShowPreferences(true), 0);
     window.setTimeout(() => bannerRef.current?.querySelector('button')?.focus(), 0);
   };
 

@@ -3,13 +3,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { commandPages } from '@/lib/content';
-import { copyText, openChat, openCookieSettings, toggleTheme } from '@/lib/ui';
+import { copyText, openCookieSettings, toggleTheme } from '@/lib/ui';
 
 const actions = [
   { label: 'Toggle theme', group: 'Action', run: toggleTheme },
-  { label: 'Copy sales email', group: 'Action', run: () => copyText('sales@bryn.com') },
+  { label: 'Copy BRYN email', group: 'Action', run: () => copyText('bryndottech@gmail.com') },
   { label: 'Cookie settings', group: 'Action', run: openCookieSettings },
-  { label: 'Chat with Bryn', group: 'Action', run: openChat },
 ];
 
 export default function CommandMenu() {

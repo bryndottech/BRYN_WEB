@@ -3,27 +3,24 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-import { mobileNav, primaryNav } from '@/lib/content';
-import { showToast } from '@/lib/ui';
+import { Fragment, useEffect, useRef, useState } from 'react';
+import { services } from '@/lib/content';
 import ThemeToggle from './ThemeToggle';
-
-const emailPattern = /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i;
 
 export default function SiteHeader() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [signInOpen, setSignInOpen] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [serviceMenuOpen, setServiceMenuOpen] = useState(false);
+  const [active, setActive] = useState('/');
   const drawerRef = useRef(null);
   const menuButtonRef = useRef(null);
   const wasMenuOpen = useRef(false);
-  const signInRef = useRef(null);
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
+  const lastScrollY = useRef(0);
+  const navProgressRef = useRef(null);
 
   useEffect(() => {
     setMenuOpen(false);
+    setServiceMenuOpen(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -43,89 +40,152 @@ export default function SiteHeader() {
 
   useEffect(() => {
     const onKeyDown = (event) => {
-      if (event.key === 'Escape' && menuOpen) {
+      if (event.key === 'Escape') {
         setMenuOpen(false);
+        setServiceMenuOpen(false);
       }
     };
+    const onDocumentClick = (event) => {
+      if (!event.target.closest?.('.service-nav')) setServiceMenuOpen(false);
+    };
     window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [menuOpen]);
+    document.addEventListener('click', onDocumentClick);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('click', onDocumentClick);
+    };
+  }, []);
 
   useEffect(() => {
-    if (!signInOpen) return;
-    const dialog = signInRef.current;
-    if (dialog && !dialog.open) dialog.showModal();
-  }, [signInOpen]);
+    lastScrollY.current = window.scrollY;
+  }, []);
 
-  const openSignIn = () => {
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = maxScroll > 0 ? Math.min(1, Math.max(0, y / maxScroll)) : 0;
+      navProgressRef.current?.style.setProperty('--p', String(progress));
+
+      const navElement = document.querySelector('.nav-shell');
+      if (menuOpen || serviceMenuOpen || !navElement) return;
+      const scrollDiff = y - lastScrollY.current;
+      if (y > 500 && scrollDiff > 0) navElement.classList.add('hd2');
+      else if (scrollDiff < 0) navElement.classList.remove('hd2');
+      lastScrollY.current = y;
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [menuOpen, serviceMenuOpen]);
+
+  useEffect(() => {
+    const sections = [
+      ['top', '/'],
+      ['services', '/#services'],
+      ['customers', '/#customers'],
+      ['faq', '/#faq'],
+    ];
+    const update = () => {
+      if (pathname !== '/') {
+        setActive(pathname);
+        return;
+      }
+      let next = '/';
+      sections.forEach(([id, href]) => {
+        const element = document.getElementById(id);
+        if (element && element.getBoundingClientRect().top < window.innerHeight * 0.48) {
+          next = href;
+        }
+      });
+      const hashHref = window.location.hash ? `/${window.location.hash}` : '';
+      if (sections.some(([, href]) => href === hashHref)) next = hashHref;
+      setActive(next);
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('hashchange', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('hashchange', update);
+    };
+  }, [pathname]);
+
+  const closeMenus = () => {
     setMenuOpen(false);
-    setErrors({});
-    setSignInOpen(true);
+    setServiceMenuOpen(false);
   };
-
-  const closeSignIn = () => {
-    signInRef.current?.close();
-    setSignInOpen(false);
-  };
-
-  const submitSignIn = (event) => {
-    event.preventDefault();
-    const email = emailRef.current?.value.trim() ?? '';
-    const password = passwordRef.current?.value ?? '';
-    const nextErrors = {};
-    if (!emailPattern.test(email)) nextErrors.email = 'Enter a valid work email.';
-    if (password.length < 6) nextErrors.password = 'Use at least 6 characters.';
-    setErrors(nextErrors);
-    if (Object.keys(nextErrors).length) return;
-    closeSignIn();
-    event.currentTarget.reset();
-    showToast('Signed in. Welcome back to Bryn.');
-  };
-
-  const isActive = (href) => href === pathname;
 
   return (
     <>
       <header className="site-header">
         <nav className="nav-shell" aria-label="Primary">
-          <Link className="brand" href="/" aria-label="BRYN home">
+          <Link className="brand" href="/" aria-label="BRYN Technologies home">
             <Image src="/brand/bryn-mark.png" alt="" width={200} height={174} priority />
             BRYN
-          </Link>
-
-          <div className="nav-links">
-            {primaryNav.map((item) => (
+          </Link>{' '}
+          <div className="nav-links" aria-label="Main navigation">
+            <Link href="/" className={active === '/' ? 'is-active' : undefined}>
+              Home
+            </Link>{' '}
+            <div className={`service-nav${serviceMenuOpen ? ' is-open' : ''}`}>
               <Link
-                key={item.label}
-                href={item.href}
-                aria-current={isActive(item.href) ? 'page' : undefined}
+                id="services-toggle"
+                href="/#services"
+                className={`service-nav-toggle${active === '/#services' ? ' is-active' : ''}`}
+                aria-haspopup="true"
+                aria-expanded={serviceMenuOpen}
+                aria-controls="nav-services-menu"
+                onClick={(event) => {
+                  event.preventDefault();
+                  setServiceMenuOpen((open) => !open);
+                }}
               >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-
-          <div className="nav-actions">
-            <button
-              type="button"
-              className="command-trigger"
-              aria-label="Open command menu"
-              onClick={() => window.dispatchEvent(new CustomEvent('bryn:command'))}
+                Services <span aria-hidden="true">▾</span>
+              </Link>{' '}
+              <div
+                className="service-nav-menu"
+                id="nav-services-menu"
+                role="menu"
+                aria-label="Services"
+              >
+                {services.map((service, index) => (
+                  <Fragment key={service.title}>
+                    <Link
+                      href="/#services"
+                      role="menuitem"
+                      data-svc={String(index)}
+                      onClick={closeMenus}
+                    >
+                      <b>{service.title}</b>
+                    </Link>{' '}
+                  </Fragment>
+                ))}
+              </div>
+            </div>{' '}
+            <Link
+              href="/#customers"
+              className={active === '/#customers' ? 'is-active' : undefined}
             >
-              ⌘K
-            </button>
-            <ThemeToggle />
-            <button type="button" className="sign-in" onClick={openSignIn}>
-              Sign in
-            </button>
-            <Link className="btn btn-dark btn-sm" href="/demo">
-              Book a demo <span aria-hidden="true">→</span>
-            </Link>
+              What We Do
+            </Link>{' '}
+            <Link href="/about" className={active === '/about' ? 'is-active' : undefined}>
+              About Us
+            </Link>{' '}
+            <Link href="/contact" className={active === '/contact' ? 'is-active' : undefined}>
+              Contact
+            </Link>{' '}
+          </div>{' '}
+          <div className="nav-actions">
+            <ThemeToggle />{' '}
+            <Link className="btn btn-dark btn-sm mag" href="/contact">
+              Start a Project <i aria-hidden="true">→</i>
+            </Link>{' '}
             <button
               ref={menuButtonRef}
               type="button"
               className="icon-button menu-toggle"
-              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-label="Open navigation menu"
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
               onClick={() => setMenuOpen((open) => !open)}
@@ -133,6 +193,7 @@ export default function SiteHeader() {
               <span className="menu-lines" aria-hidden="true" />
             </button>
           </div>
+          <i className="nav-progress" aria-hidden="true" ref={navProgressRef} />
         </nav>
       </header>
 
@@ -140,70 +201,62 @@ export default function SiteHeader() {
         ref={drawerRef}
         id="mobile-menu"
         className={`mobile-drawer${menuOpen ? ' is-open' : ''}`}
+        aria-label="Mobile navigation"
         aria-hidden={!menuOpen}
         inert={!menuOpen}
       >
-        {mobileNav.map((item) => (
-          <Link key={item.label} href={item.href} onClick={() => setMenuOpen(false)}>
-            {item.label}
-          </Link>
-        ))}
-        <Link className="btn btn-primary" href="/demo" onClick={() => setMenuOpen(false)}>
-          Book a demo →
-        </Link>
+        <Link href="/" onClick={closeMenus} className={active === '/' ? 'is-active' : undefined}>
+          Home
+        </Link>{' '}
+        <div className="drawer-services">
+          <button
+            type="button"
+            className={`drawer-service-toggle${active === '/#services' ? ' is-active' : ''}`}
+            aria-expanded={serviceMenuOpen}
+            aria-controls="mobile-service-links"
+            onClick={() => setServiceMenuOpen((open) => !open)}
+          >
+            Services <span aria-hidden="true">{serviceMenuOpen ? '－' : '＋'}</span>
+          </button>{' '}
+          <div className="drawer-service-links" id="mobile-service-links" hidden={!serviceMenuOpen}>
+            {services.map((service, index) => (
+              <Fragment key={service.title}>
+                <Link
+                  href="/#services"
+                  data-svc={String(index)}
+                  onClick={closeMenus}
+                >
+                  {service.title}
+                </Link>{' '}
+              </Fragment>
+            ))}
+          </div>
+        </div>{' '}
+        <Link
+          href="/#customers"
+          onClick={closeMenus}
+          className={active === '/#customers' ? 'is-active' : undefined}
+        >
+          What We Do
+        </Link>{' '}
+        <Link
+          href="/about"
+          onClick={closeMenus}
+          className={active === '/about' ? 'is-active' : undefined}
+        >
+          About Us
+        </Link>{' '}
+        <Link
+          href="/contact"
+          onClick={closeMenus}
+          className={active === '/contact' ? 'is-active' : undefined}
+        >
+          Contact
+        </Link>{' '}
+        <Link className="btn btn-primary" href="/contact" onClick={closeMenus}>
+          Start a Project →
+        </Link>{' '}
       </div>
-
-      <dialog
-        ref={signInRef}
-        aria-labelledby="signin-title"
-        onClose={() => setSignInOpen(false)}
-        onClick={(event) => {
-          if (event.target === event.currentTarget) closeSignIn();
-        }}
-      >
-        <div className="dialog-card">
-          <button type="button" className="dialog-close" aria-label="Close" onClick={closeSignIn}>
-            ×
-          </button>
-          <h2 id="signin-title">Sign in to Bryn</h2>
-          <p>Preview only. No account is created.</p>
-          <form onSubmit={submitSignIn} noValidate>
-            <div className={`field${errors.email ? ' is-invalid' : ''}`}>
-              <label htmlFor="signin-email">Work email</label>
-              <input
-                ref={emailRef}
-                id="signin-email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                aria-invalid={Boolean(errors.email)}
-                aria-describedby={errors.email ? 'signin-email-error' : undefined}
-              />
-              <span className="field-error" id="signin-email-error" aria-live="polite">
-                {errors.email ?? ''}
-              </span>
-            </div>
-            <div className={`field${errors.password ? ' is-invalid' : ''}`}>
-              <label htmlFor="signin-password">Password</label>
-              <input
-                ref={passwordRef}
-                id="signin-password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                aria-invalid={Boolean(errors.password)}
-                aria-describedby={errors.password ? 'signin-password-error' : undefined}
-              />
-              <span className="field-error" id="signin-password-error" aria-live="polite">
-                {errors.password ?? ''}
-              </span>
-            </div>
-            <button type="submit" className="btn btn-primary btn-block">
-              Sign in <span aria-hidden="true">→</span>
-            </button>
-          </form>
-        </div>
-      </dialog>
     </>
   );
 }

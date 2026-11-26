@@ -9,16 +9,16 @@ export default function PageHero({ eyebrow, title, description, children, aside 
         <div>
           <span className="tag">
             <span className="tag-dot" aria-hidden="true" />
-            {eyebrow}
+            <span data-sc>{eyebrow}</span>
           </span>
-          <h1>
+          <h1 className="in">
             {lines.map((line) => (
-              <span className="line" key={line}>
-                {line}
+              <span className="m" key={line}>
+                <span>{line}</span>
               </span>
             ))}
           </h1>
-          <p>{description}</p>
+          <p data-r>{description}</p>
           {children}
         </div>
         {aside ? <div>{aside}</div> : null}

@@ -2,26 +2,37 @@
 
 import { useId, useState } from 'react';
 
-export default function Accordion({ items, defaultOpen = 0, emptyMessage }) {
+export default function Accordion({
+  items,
+  defaultOpen = 0,
+  emptyMessage,
+  variant = 'default',
+}) {
   const [openIndex, setOpenIndex] = useState(defaultOpen);
   const baseId = useId();
+  const isLive = variant === 'live';
 
   if (!items.length) {
     return <p className="faq-empty">{emptyMessage ?? 'No results.'}</p>;
   }
 
   return (
-    <div className="accordion">
+    <div className={isLive ? 'qa-list' : 'accordion'}>
       {items.map((item, index) => {
         const isOpen = openIndex === index;
         const buttonId = `${baseId}-button-${index}`;
         const panelId = `${baseId}-panel-${index}`;
         return (
-          <div className={`accordion-item${isOpen ? ' is-open' : ''}`} key={item.title}>
+          <div
+            className={
+              isLive ? `qa${isOpen ? ' on' : ''}` : `accordion-item${isOpen ? ' is-open' : ''}`
+            }
+            key={item.title}
+          >
             <button
               id={buttonId}
               type="button"
-              className="accordion-trigger"
+              className={isLive ? 'qb' : 'accordion-trigger'}
               aria-expanded={isOpen}
               aria-controls={panelId}
               onClick={() => setOpenIndex(isOpen ? -1 : index)}
@@ -31,7 +42,7 @@ export default function Accordion({ items, defaultOpen = 0, emptyMessage }) {
             </button>
             <div
               id={panelId}
-              className="accordion-panel"
+              className={isLive ? 'qc' : 'accordion-panel'}
               role="region"
               aria-labelledby={buttonId}
               aria-hidden={!isOpen}
