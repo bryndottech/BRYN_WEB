@@ -226,7 +226,7 @@ export default function DemoClient({ services, days, initialService }) {
       </div>
 
       <button type="submit" className="btn btn-primary btn-block">
-        Confirm booking <span aria-hidden="true">→</span>
+        Confirm booking <i aria-hidden="true">→</i>
       </button>
     </form>
   );

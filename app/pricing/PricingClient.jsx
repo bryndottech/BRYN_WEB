@@ -38,7 +38,10 @@ export default function PricingClient() {
         {plans.map((plan) => {
           const price = plan.price ? Math.round(plan.price * (annual ? 0.8 : 1)) : 0;
           return (
-            <article className={`plan-card${plan.featured ? ' is-featured' : ''}`} key={plan.name}>
+            <article
+              className={`plan-card pc${plan.featured ? ' is-featured' : ''}`}
+              key={plan.name}
+            >
               {plan.featured ? <span className="tag">Most popular</span> : null}
               <h3>{plan.name}</h3>
               <p>{plan.description}</p>
@@ -56,7 +59,7 @@ export default function PricingClient() {
                 href="/demo?service=Platform"
               >
                 {plan.price ? `Start with ${plan.name}` : 'Talk to sales'}{' '}
-                <span aria-hidden="true">→</span>
+                <i aria-hidden="true">→</i>
               </Link>
             </article>
           );

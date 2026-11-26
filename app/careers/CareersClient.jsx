@@ -111,7 +111,7 @@ export default function CareersClient({ roles, departments }) {
                 <p>{role.description}</p>
               </div>
               <button type="button" className="btn" onClick={() => setApplying(role)}>
-                Apply <span aria-hidden="true">→</span>
+                Apply <i aria-hidden="true">→</i>
               </button>
             </article>
           ))}
@@ -192,7 +192,7 @@ export default function CareersClient({ roles, departments }) {
               <span className="field-hint">Optional in this preview.</span>
             </div>
             <button type="submit" className="btn btn-primary btn-block">
-              Send application <span aria-hidden="true">→</span>
+              Send application <i aria-hidden="true">→</i>
             </button>
           </form>
         </div>

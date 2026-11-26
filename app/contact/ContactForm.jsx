@@ -6,7 +6,7 @@ import { showToast } from '@/lib/ui';
 
 const emailPattern = /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i;
 
-export default function ContactForm({ topics, initialTopic = 'Sales' }) {
+export default function ContactForm({ topics, initialTopic = 'Project enquiry' }) {
   const [topic, setTopic] = useState(initialTopic);
   const [errors, setErrors] = useState({});
   const [sent, setSent] = useState(null);
@@ -129,7 +129,7 @@ export default function ContactForm({ topics, initialTopic = 'Sales' }) {
       </div>
 
       <button type="submit" className="btn btn-primary btn-block">
-        Send message <span aria-hidden="true">→</span>
+        Send message <i aria-hidden="true">→</i>
       </button>
     </form>
   );

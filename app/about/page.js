@@ -1,87 +1,51 @@
 import Link from 'next/link';
 import PageHero from '@/app/components/PageHero';
-import { aboutValues, leadership, milestones, offices } from '@/lib/content';
+import { aboutValues } from '@/lib/content';
 
 export const metadata = {
-  title: 'About',
+  title: 'About BRYN',
   description:
-    'Bryn started with one belief: enterprise software should be calm, fast and accountable. Today we help hundreds of teams run on one backbone.',
+    'BRYN Technologies brings development, design, marketing and technology services together to help businesses build and improve their digital presence.',
 };
 
 export default function AboutPage() {
   return (
     <>
       <PageHero
-        eyebrow="About Bryn"
-        title={['We build the systems', 'behind modern work.']}
-        description="Bryn started with one belief: enterprise software should be calm, fast and accountable. Today we help hundreds of teams run on one backbone."
+        eyebrow="About BRYN"
+        title={['Digital expertise', 'for real business needs.']}
+        description="BRYN Technologies brings development, design, marketing and technology services together to help businesses build and improve their digital presence."
       />
 
-      <section className="section section-tight">
+      <section className="section">
         <div className="container">
-          <p className="about-mission">
-            Our mission is to make complex organizations feel simple to run.
+          <p className="big2" data-r>
+            Our focus is practical digital work: understand the need, choose the right approach and
+            deliver a solution that serves the business and its users.
           </p>
         </div>
       </section>
 
-      <section className="section section-dark">
+      <section className="section section-dark about-guide">
         <div className="container">
-          <h2>What we believe.</h2>
-          <div className="value-grid">
+          <div className="hd">
+            <h2 data-r>What guides our work.</h2>
+            <p data-r>Clear communication, purposeful design and maintainable solutions.</p>
+          </div>
+          <div className="agency-grid">
             {aboutValues.map(([title, body]) => (
-              <div key={title}>
+              <article className="agency-card" key={title}>
                 <h3>{title}</h3>
                 <p>{body}</p>
-              </div>
+              </article>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="container">
-          <h2>Milestones.</h2>
-          <ul className="timeline">
-            {milestones.map(([year, text]) => (
-              <li key={year}>
-                <b>{year}</b>
-                <span>{text}</span>
-              </li>
-            ))}
-          </ul>
-
-          <h2 className="about-heading">Leadership.</h2>
-          <div className="team-grid">
-            {leadership.map(([name, role]) => (
-              <div className="team-member" key={name}>
-                <span className="avatar" aria-hidden="true">
-                  {name
-                    .split(' ')
-                    .map((part) => part[0])
-                    .join('')}
-                </span>
-                <div>
-                  <b>{name}</b>
-                  <span>{role}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <h2 className="about-heading is-compact">Offices.</h2>
-          <div className="office-list">
-            {offices.map((office) => (
-              <span key={office}>{office}</span>
-            ))}
-          </div>
-
-          <div className="page-actions">
-            <Link className="btn btn-primary" href="/careers">
-              See open roles <span aria-hidden="true">→</span>
+          <div className="cta">
+            <Link className="btn btn-primary" href="/#services">
+              Explore services <i aria-hidden="true">→</i>
             </Link>
             <Link className="btn" href="/contact">
-              Get in touch
+              Contact BRYN
             </Link>
           </div>
         </div>

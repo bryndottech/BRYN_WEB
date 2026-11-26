@@ -1,6 +1,10 @@
 import Link from 'next/link';
 import CommandButton from './components/CommandButton';
 
+export const metadata = {
+  title: 'Page not found — BRYN',
+};
+
 export default function NotFound() {
   return (
     <section className="not-found">

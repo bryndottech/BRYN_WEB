@@ -31,7 +31,7 @@ export default function TrustPage() {
           </div>
           <div className="page-actions">
             <Link className="btn btn-primary" href="/contact?topic=Security">
-              Request audit report <span aria-hidden="true">→</span>
+              Request audit report <i aria-hidden="true">→</i>
             </Link>
           </div>
         </div>

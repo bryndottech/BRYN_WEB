@@ -54,7 +54,7 @@ export default function JournalClient({ posts }) {
             Copy link
           </button>
           <Link className="btn btn-primary" href="/demo">
-            Book a demo <span aria-hidden="true">→</span>
+            Book a demo <i aria-hidden="true">→</i>
           </Link>
         </div>
         <div className="next-post">
@@ -65,7 +65,7 @@ export default function JournalClient({ posts }) {
             className="text-link"
             onClick={() => setSelected((selected + 1) % posts.length)}
           >
-            Read next article <span aria-hidden="true">→</span>
+            Read next article <i aria-hidden="true">→</i>
           </button>
         </div>
       </article>
@@ -114,7 +114,7 @@ export default function JournalClient({ posts }) {
                 {post.date} / {post.read}
               </span>
               <button type="button" className="text-link" onClick={() => setSelected(index)}>
-                Read article <span aria-hidden="true">→</span>
+                Read article <i aria-hidden="true">→</i>
               </button>
             </article>
           ))}
