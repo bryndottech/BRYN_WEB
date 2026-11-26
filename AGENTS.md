@@ -2,16 +2,48 @@
 
 This file is the permanent operating contract for AI coding agents working on this
 repository. Read it together with `DESIGN.md` before changing any UI, copy, or code.
-If a task conflicts with this file, stop and ask; do not silently override it.
+
+## 0. Conflict rule — latest `origin/main` wins for UI
+
+> **Explicit user override:** Latest `origin/main` is authoritative for UI, visual
+> design, animations and interactions. Existing Next.js architecture remains the
+> implementation target. Preserve valid content and functionality, not outdated
+> visual decisions. Existing project restrictions should not automatically reject
+> verified design changes from the latest reference. Fix rendering and migration
+> regressions rather than layering CSS patches over them.
+>
+> **Content preference:** latest `origin/main` is also the preferred reference for
+> content where equivalent copy exists. Preserve valid existing content that has no
+> main equivalent; do not invent, duplicate, or silently rebrand claims.
+
+The latest `origin/main` branch is the source of truth for UI, layout, typography,
+spacing, colors, animation, hover/focus states, navigation, responsive behavior,
+sections, and component behavior.
+
+- Import latest-main UI changes directly. Do not ask for approval to adopt a visual
+  or interaction treatment that exists on latest `origin/main`.
+- Do not use an older design rule, “cleanup,” or a generic anti-slop checklist to
+  water down, omit, or rebrand latest-main UI.
+- If a rule in this file or `DESIGN.md` conflicts with latest `origin/main` UI, the
+  latest main implementation wins for parity work. Record any intentional deviation
+  explicitly in the final report.
+- Keep valid existing copy, data, and functionality. Latest main is the UI reference,
+  not permission to replace content with unverified or duplicate copy.
+- The only reasons to pause an import are a real accessibility regression, a broken
+  layout, duplicated elements, or a content claim that cannot be verified. Fix those
+  problems while preserving the intended main-branch appearance.
 
 ## 1. Project overview and technical stack
 
 - **Product:** BRYN — an enterprise operations platform plus a web, app, and growth
-  studio. The site must read as a calm, accountable enterprise company, not a generic
-  SaaS template or an agency showcase.
-- **Current source:** `bryn.index.html.html` — one self-contained HTML document with
-  inline CSS, inline vanilla JavaScript, a hash-based SPA router, and a base64 logo.
-  It is the reference for content, layout, and behavior until the migration is done.
+  studio. The site must read as a calm, accountable enterprise company while matching
+  the latest-main visual system.
+- **UI source of truth:** latest `origin/main` for UI, layout, typography, spacing,
+  colors, animation, hover/interaction states, navigation, responsive behavior,
+  sections, and components.
+- **Content reference:** the local `bryn.index.html.html` and current app content for
+  verified copy, metadata, and form behavior. Preserve valid existing content; do not
+  overwrite, duplicate, or stack elements.
 - **Migration target:** Next.js App Router, JavaScript only, JSX components, global
   CSS with design tokens, no TypeScript, no Tailwind, no CSS-in-JS, no UI kit.
 - **Runtime:** Node 24+, npm. Fonts: Plus Jakarta Sans, Inter, JetBrains Mono, and
@@ -28,70 +60,68 @@ If a task conflicts with this file, stop and ask; do not silently override it.
 - **Server Components by default.** Add `'use client'` only where state, effects,
   browser APIs, or event handlers are genuinely required.
 - Keep client boundaries small and leaf-level: theme toggle, mobile nav, command
-  menu, tabs, filters, accordions, forms, cookie banner, and the pinned flow.
+  menu, tabs, filters, accordions, forms, cookie banner, pointer-driven effects, and
+  the pinned flow.
 - Use `next/link`, `next/image`, `next/font`, and the Metadata API. Preserve the
   existing title, description, Open Graph tags, and JSON-LD organization data.
 - Prefer semantic HTML and data-driven JSX. Do not paste the old HTML document into
   a component. Do not use `dangerouslySetInnerHTML` unless the content is trusted,
   static, and sanitized.
 - Do not add dependencies, UI libraries, animation libraries, CSS frameworks, or
-  state managers without explicit approval and a compatibility check.
+  state managers without explicit approval and a compatibility check. Implement
+  latest-main interactions in vanilla CSS/JS unless approval is given otherwise.
 - Keep the app buildable with `npm run build`; no unused imports or dead routes.
 
 ## 3. Existing brand identity preservation
 
-The brand already exists. Discover it from the code; do not invent a new one.
+The brand already exists. Discover it from latest `origin/main`; do not invent a new one.
 
-- Preserve the blue accent, off-white and near-black grounds, dark alternating
-  bands, the four type roles, the BRYN monogram, and the restrained enterprise voice.
+- Preserve the brand identity as implemented on latest main, including the blue base,
+  the magenta/green interaction palette, active-navigation treatment, off-white and
+  near-black grounds, dark alternating bands, the four type roles, the BRYN monogram,
+  and the enterprise voice.
 - Preserve the product-UI-led hero and the existing page inventory. Do not rebrand,
   rename the company, redraw the logo, or change core messaging without approval.
-- Preserve the light/dark theme behavior and the existing section rhythm.
-- If a brand value is unclear, inspect the existing CSS/markup and record the verified
-  value in `DESIGN.md`. Never guess and never present a guess as approved.
+- Preserve light/dark theme behavior and the latest-main section rhythm.
+- If a brand value is unclear, inspect the latest-main CSS/markup and record the
+  verified value in `DESIGN.md`. Never guess and never present a guess as approved.
 
 ## 4. Approved design-system rules
 
-Exact values and component details live in `DESIGN.md`. The rules below are binding.
+Exact values and component details live in `DESIGN.md`. Latest `origin/main` is the
+binding visual reference.
 
-- **Color:** `#2563EB` is the only brand accent. Use the light/dark neutral tokens in
-  `DESIGN.md`; semantic green/amber/red only for status. No new accent colors.
-- **Type:** Plus Jakarta Sans for display and UI headings; Inter for body; JetBrains
-  Mono for labels and metadata; Instrument Serif only for editorial pull quotes and
-  the closing statement. Do not add a fifth family.
-- **Radius:** `8px` small, `12px` medium, `16px` large; pills only for tags, status
-  chips, and avatars. Buttons `12px`; cards/panels `16px`; inputs `12px`; chips `8px`.
-- **Spacing:** 4/8/12/16/24/32/48/64/96/128. Container `min(1280px, 100% - 48px)`.
-  Section padding `clamp(72px, 10vw, 150px)`.
-- **Buttons:** one primary (solid blue), one secondary (hairline), one dark/black
-  where needed. Hover darkens or lifts `1px`; active returns to `0`; focus-visible is
-  a `2px` blue ring. Minimum target `44×44px`.
-- **Motion:** `150–300ms`, easing `cubic-bezier(.16,1,.3,1)`. Hero entrance only.
-  No tilt, glitch, confetti, magnetic buttons, custom cursor, or scroll reveal on
-  every section. Respect `prefers-reduced-motion`.
-- **Surfaces:** prefer whitespace, alignment, and `1px` hairlines over cards and
-  shadows. Never combine a `2px+` border with a rounded card.
+- **Color:** use latest-main color roles and tokens, including
+  `--brand-hover: linear-gradient(110deg, #F701FC 0%, #03F848 100%)`, magenta active
+  navigation, and magenta/green spotlight and border treatments. The blue `#2563EB`
+  accent remains the base, but it is not the only interaction color.
+- **Type:** match latest main. Keep Plus Jakarta Sans, Inter, JetBrains Mono, and
+  Instrument Serif in their established roles; do not add a fifth family.
+- **Radius and spacing:** match latest main. Tokens such as 8/12/16px and the spacing
+  scale are implementation aids only; they must not change the rendered UI.
+- **Buttons:** reproduce latest-main primary, secondary, dark, gradient-hover, arrow
+  shift, focus, and active states. Keep targets at least `44×44px` where this does not
+  alter the intended design.
+- **Motion:** reproduce latest-main motion, including hero masks, `[data-r]` reveals,
+  magnetic buttons, card spotlight/tilt, nav progress, page curtain, parallax,
+  count-up, and text scramble. Respect `prefers-reduced-motion`; do not leave content
+  permanently hidden.
+- **Surfaces:** reproduce latest-main surfaces, including hairlines, glass nav/cards,
+  glows, gradient borders, rounded cards, and the product window. Do not replace them
+  with a flatter “cleaned up” version.
 
-## 5. Anti-AI-slop design restrictions
+## 5. Content and implementation guardrails
 
-Remove, do not repackage:
+These guardrails protect truthfulness and correctness; they do not ban latest-main UI.
 
-- magenta/green hover gradients, orange/blue glitch effects, neon confetti, random
-  accent colors, and unrelated yellow hover states;
-- 3D card tilt, scroll-linked hero tilt, magnetic buttons, custom cursors, page
-  curtains, and scroll-jacking (the existing pinned “Three workflows” section is the
-  one allowed scroll moment and must keep its mobile/reduced-motion fallback);
-- fade-in-on-scroll for every section, blinking, parallax text, and decorative loops;
-- glassmorphism beyond the existing nav, blobs, glows, generic gradients, card soup,
-  nested rounded panels, pill-everything, and thick borders on rounded cards;
-- invented testimonials, customer logos, metrics, certifications, team members,
-  addresses, or “live” data. Preserve existing copy; flag unverified claims instead
-  of silently rewriting them;
-- fake live intervals, random sparklines, and random audit streams. Use static sample
-  data or label it clearly.
-
-Prefer hierarchy through type, spacing, alignment, and real product UI. Every visual
-element must have a purpose. Remove before adding.
+- Do not invent testimonials, customer logos, metrics, certifications, team members,
+  addresses, or “live” data. Preserve existing copy and flag unverified claims.
+- Do not present simulated form submissions, random data, or sample status bars as
+  live production behavior. Use static sample data or label it clearly.
+- Do not add unrelated visual elements, duplicate sections, or stacked controls while
+  importing main-branch UI. Resolve overlaps and broken layouts instead of hiding them.
+- When a main-branch effect depends on JavaScript, provide a safe reduced-motion and
+  no-permanent-hidden fallback.
 
 ## 6. Content preservation rules
 
@@ -103,8 +133,8 @@ element must have a purpose. Remove before adding.
 - Preserve SEO metadata, JSON-LD, and the existing heading hierarchy.
 - Preserve form fields and validation behavior. A simulated success state is not a
   real submission.
-- If content conflicts with the anti-slop rules (for example an unverified claim),
-  report it in the final summary and ask before changing it.
+- If content contains an unverifiable claim, report it in the final summary and ask
+  before changing it. Do not silently rewrite copy to make it verifiable.
 
 ## 7. CSS architecture and coding conventions
 
@@ -113,7 +143,7 @@ element must have a purpose. Remove before adding.
 - Keep the existing short class names where they already describe the component
   (`.btn`, `.hero`, `.cd`, `.pc`); group new rules by component and comment sections.
 - Use CSS variables for color, radius, spacing, and motion. No one-off hex values
-  outside the token files.
+  outside the token files unless reproducing a verified latest-main value.
 - Do not use Tailwind, CSS-in-JS, Sass, or new preprocessors.
 - Avoid `!important`, duplicate selectors, conflicting declarations, and inline
   styles except for genuinely dynamic values.
@@ -133,8 +163,9 @@ element must have a purpose. Remove before adding.
 - Forms: visible labels, field-level errors, `aria-invalid`, and an announced success
   state. Do not rely on color alone.
 - Images: meaningful `alt`; decorative images use empty `alt` or `aria-hidden`.
-- Contrast must meet WCAG AA in both themes. Do not hide content behind JavaScript:
-  content is visible without JS.
+- Contrast must meet WCAG AA in both themes. Do not hide content permanently behind
+  JavaScript: main-branch reveal effects may start hidden but must resolve on load,
+  intersection, or immediately under reduced motion.
 - Targets at least `44×44px` with adequate spacing. Respect reduced motion.
 - Verify 1440, 1024, 820, 768, 390, and 320 widths. No horizontal scroll; mobile nav
   is a deliberate full-screen composition, not a squeezed desktop bar.
@@ -155,8 +186,8 @@ element must have a purpose. Remove before adding.
 
 ## 10. Instructions for future AI coding agents
 
-1. Read `AGENTS.md` and `DESIGN.md` first. Then inspect the actual files before
-   proposing or making changes.
+1. Read `AGENTS.md` and `DESIGN.md` first. Then inspect latest `origin/main` and the
+   actual app files before proposing or making changes.
 2. Do not create, rename, switch, or delete branches. Work on the current branch.
 3. Do not install dependencies or skills without checking requirements and
    compatibility, and without explicit approval.
@@ -164,11 +195,11 @@ element must have a purpose. Remove before adding.
    never pretend a skill is installed or invent its capabilities.
 5. Priority skills for design/frontend work: `design-taste-frontend` (Taste Skill),
    `design-slop`, `ui-ux`, `frontend-craft`, and `web-design-guidelines`. Read the
-   relevant `SKILL.md` before applying it. Combine only complementary skills; the
-   project’s brand and these instructions override generic skill defaults.
+   relevant `SKILL.md` before applying it. Generic skill defaults and brand
+   preferences must not override the latest-main conflict rule in section 0.
 6. Do not edit `.agents/` or `skills-lock.json`; do not commit them.
-7. Preserve content and brand. Ask before changing copy, claims, palette, logo, or
-   page inventory. Keep changes scoped; no drive-by redesigns.
+7. Import latest-main UI without asking. Ask before inventing new copy, claims, logo
+   changes, or page inventory changes. Keep changes scoped; no drive-by redesigns.
 8. Update `AGENTS.md` and `DESIGN.md` when implementation decisions materially
    change. Keep the two files complementary, not duplicated.
 9. Verify with a real build and a real browser. Report what was verified, what was
