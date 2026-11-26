@@ -24,22 +24,14 @@ function upcomingWeekdays(count) {
   return days;
 }
 
-export default async function DemoPage({ searchParams }) {
-  const params = await searchParams;
-  const requested = params?.service;
-  const initialService = serviceNames.includes(requested) ? requested : 'Platform';
-
+export default function DemoPage() {
   return (
     <PageHero
       eyebrow="Book a demo"
       title={['See Bryn on', 'your workflows.']}
       description="Thirty minutes with a solutions engineer. Bring a real process, platform or project and leave with a plan."
       aside={
-        <DemoClient
-          services={serviceNames}
-          days={upcomingWeekdays(5)}
-          initialService={initialService}
-        />
+        <DemoClient services={serviceNames} days={upcomingWeekdays(5)} />
       }
     >
       <ul className="demo-list">

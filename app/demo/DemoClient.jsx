@@ -1,14 +1,26 @@
 'use client';
 
 import Link from 'next/link';
-import { useId, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useId, useRef, useState } from 'react';
 import { demoSizes, demoTimes } from '@/lib/content';
 import { showToast } from '@/lib/ui';
 
 const emailPattern = /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i;
 
-export default function DemoClient({ services, days, initialService }) {
-  const [service, setService] = useState(initialService);
+function ServiceParamSync({ services, setService }) {
+  const searchParams = useSearchParams();
+  const requested = searchParams.get('service');
+
+  useEffect(() => {
+    if (requested && services.includes(requested)) setService(requested);
+  }, [requested, services, setService]);
+
+  return null;
+}
+
+export default function DemoClient({ services, days }) {
+  const [service, setService] = useState('Platform');
   const [day, setDay] = useState('');
   const [time, setTime] = useState('');
   const [errors, setErrors] = useState({});
@@ -63,6 +75,9 @@ export default function DemoClient({ services, days, initialService }) {
   if (booked) {
     return (
       <div className="form-card form-success" role="status" aria-live="polite">
+        <Suspense fallback={null}>
+          <ServiceParamSync services={services} setService={setService} />
+        </Suspense>
         <span className="success-mark" aria-hidden="true">
           <svg viewBox="0 0 24 24">
             <path d="M5 12.5l4.5 4.5L19 7.5" />
@@ -90,6 +105,9 @@ export default function DemoClient({ services, days, initialService }) {
 
   return (
     <form className="form-card" ref={formRef} onSubmit={submit} noValidate>
+      <Suspense fallback={null}>
+        <ServiceParamSync services={services} setService={setService} />
+      </Suspense>
       <p className="form-note">Preview form — no booking is created yet.</p>
 
       <div className="form-grid">
