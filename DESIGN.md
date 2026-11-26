@@ -503,3 +503,20 @@ Before calling a UI change complete:
    curtain, parallax, and count-up are present where the reference uses them.
 8. Confirm copy, heading hierarchy, metadata, and JSON-LD are preserved.
 9. Report any skipped main-branch effect with an explicit reason.
+
+## 12. GitHub Pages deployment
+
+The deployed target is `https://bryndottech.github.io/BRYN_WEB/`. Local development
+and `npm run dev` remain root-relative. Static-export settings are applied only when
+`GITHUB_PAGES=true`; the workflow also sets `NEXT_PUBLIC_BASE_PATH` from
+`actions/configure-pages`, so `next/link`, `next/image`, metadata icons, and the
+curtain-mark CSS asset resolve under `/BRYN_WEB`. `images.unoptimized` is enabled
+for the export because GitHub Pages cannot run the Next.js image optimizer. A
+`public/.nojekyll` file is copied into `out/` so Pages does not discard the `_next`
+asset directory. Footer column links use `next/link` so their data-driven internal
+hrefs also receive the base path.
+
+The `/demo` page no longer reads `searchParams` in the Server Component. Its query
+string is read by a client `useSearchParams` child inside a `Suspense` boundary,
+which keeps the route exportable and preserves `?service=` deep links from pricing.
+
