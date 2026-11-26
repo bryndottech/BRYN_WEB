@@ -1547,7 +1547,7 @@ a.tag {
 .curtain-mark {
   width: 64px;
   aspect-ratio: 200 / 174;
-  background: url('/brand/bryn-mark.png') center / contain no-repeat;
+  background: var(--curtain-mark) center / contain no-repeat;
 }
 
 #route-curtain.in {

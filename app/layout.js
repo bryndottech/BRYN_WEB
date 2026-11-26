@@ -9,6 +9,7 @@ import Toast from './components/Toast';
 import InteractionEffects from './components/InteractionEffects';
 import SectionRail from './components/SectionRail';
 import { site } from '@/lib/content';
+import { withBasePath } from '@/lib/paths';
 
 export const metadata = {
   title: {
@@ -23,7 +24,7 @@ export const metadata = {
     siteName: 'BRYN',
   },
   icons: {
-    icon: '/brand/bryn-mark.png',
+    icon: withBasePath('/brand/bryn-mark.png'),
   },
 };
 
@@ -81,7 +82,12 @@ export default function RootLayout({ children }) {
           Skip to content
         </a>
         <div id="route-curtain" aria-hidden="true">
-          <span className="curtain-mark" />
+          <span
+            className="curtain-mark"
+            style={{
+              '--curtain-mark': `url('${withBasePath('/brand/bryn-mark.png')}')`,
+            }}
+          />
         </div>
         <InteractionEffects />
         <SiteHeader />

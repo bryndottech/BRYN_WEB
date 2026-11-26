@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { withBasePath } from '@/lib/paths';
 import ConnectEmailLink from './ConnectEmailLink';
 
 export const metadata = {
@@ -182,7 +183,7 @@ export default function ConnectPage() {
             <span className="connect-logo-wrap">
               <Image
                 className="connect-logo"
-                src="/brand/bryn-mark.png"
+                src={withBasePath('/brand/bryn-mark.png')}
                 alt=""
                 width={38}
                 height={38}

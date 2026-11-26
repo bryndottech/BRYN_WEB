@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { services } from '@/lib/content';
+import { withBasePath } from '@/lib/paths';
 import ThemeToggle from './ThemeToggle';
 
 export default function SiteHeader() {
@@ -121,7 +122,13 @@ export default function SiteHeader() {
       <header className="site-header">
         <nav className="nav-shell" aria-label="Primary">
           <Link className="brand" href="/" aria-label="BRYN Technologies home">
-            <Image src="/brand/bryn-mark.png" alt="" width={200} height={174} priority />
+            <Image
+              src={withBasePath('/brand/bryn-mark.png')}
+              alt=""
+              width={200}
+              height={174}
+              priority
+            />
             BRYN
           </Link>{' '}
           <div className="nav-links" aria-label="Main navigation">

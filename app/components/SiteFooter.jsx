@@ -30,9 +30,9 @@ export default function SiteFooter() {
                     {link.label}
                   </button>
                 ) : (
-                  <a key={link.label} href={link.href} data-svc={link['data-svc']}>
+                  <Link key={link.label} href={link.href} data-svc={link['data-svc']}>
                     {link.label}
-                  </a>
+                  </Link>
                 ),
               )}
             </div>
