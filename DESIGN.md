@@ -511,12 +511,11 @@ Before calling a UI change complete:
 
 ## 12. GitHub Pages deployment
 
-The deployed target is `https://bryndottech.github.io/BRYN/`, sourced from the
-private `bryndottech/BRYN` repository. Local development and `npm run dev` remain
-root-relative. Static-export settings are applied only when `GITHUB_PAGES=true`;
-the workflow also sets `NEXT_PUBLIC_BASE_PATH` from `actions/configure-pages`, so
-`next/link`, `next/image`, metadata icons, and the curtain-mark CSS asset resolve
-under `/BRYN`. `images.unoptimized` is enabled
+The deployed target is `https://bryndottech.github.io/BRYN_WEB/`. Local development
+and `npm run dev` remain root-relative. Static-export settings are applied only when
+`GITHUB_PAGES=true`; the workflow also sets `NEXT_PUBLIC_BASE_PATH` from
+`actions/configure-pages`, so `next/link`, `next/image`, metadata icons, and the
+curtain-mark CSS asset resolve under `/BRYN_WEB`. `images.unoptimized` is enabled
 for the export because GitHub Pages cannot run the Next.js image optimizer. A
 `public/.nojekyll` file is copied into `out/` so Pages does not discard the `_next`
 asset directory. Footer column links use `next/link` so their data-driven internal

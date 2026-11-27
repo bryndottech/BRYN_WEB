@@ -211,7 +211,7 @@ export default function ConnectPage() {
 
           <a
             className="connect-website"
-            href="https://bryndottech.github.io/BRYN/"
+            href="https://bryndottech.github.io/BRYN_WEB/"
             target="_blank"
             rel="noopener noreferrer"
           >
