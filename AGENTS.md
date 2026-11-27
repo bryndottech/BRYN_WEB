@@ -207,12 +207,14 @@ These guardrails protect truthfulness and correctness; they do not ban latest-ma
 
 ## 11. Deployment target
 
-The live site is `https://bryndottech.github.io/BRYN_WEB/`, served by the same
-GitHub repository as this local checkout. Publishing uses the Next.js static
-export from `.github/workflows/deploy-pages.yml`; Pages must be set to
+The live site is `https://bryndottech.github.io/BRYN/`, served from the private
+`bryndottech/BRYN` repository via GitHub Actions. Publishing uses the Next.js
+static export from `.github/workflows/deploy-pages.yml`; Pages must be set to
 **GitHub Actions** as the source. The workflow builds with `GITHUB_PAGES=true`
-and `NEXT_PUBLIC_BASE_PATH=/BRYN_WEB`, then uploads `out/`. Local dev and the
-default build remain root-relative.
+and `NEXT_PUBLIC_BASE_PATH=/BRYN`, then uploads `out/`. Local dev and the
+default build remain root-relative. The repository is private; the Pages site
+itself remains publicly reachable unless organization Pages access controls are
+configured.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
